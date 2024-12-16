@@ -8,7 +8,6 @@ from tqdm import tqdm
 class CameraCalibration:
     """
     This class is used to calibrate the camera and the robot's TCP poses
-
     """
     def __init__(self,
         image_folder,
@@ -99,6 +98,7 @@ class CameraCalibration:
             # print and save each results as .npz file
             print("The results for method", i, "are:")
             print("t_cam2gripper:", self.t_cam2gripper)
+            print("R_cam2gripper:", self.R_cam2gripper)
             # Create 4x4 transfromation matrix
             self.T_cam2gripper = np.concatenate((self.R_cam2gripper, self.t_cam2gripper), axis=1)
             self.T_cam2gripper = np.concatenate((self.T_cam2gripper, np.array([[0, 0, 0, 1]])), axis=0)
@@ -109,7 +109,6 @@ class CameraCalibration:
             self.T_gripper2cam = np.linalg.inv(self.T_cam2gripper)
             np.savetxt(os.path.join(transform_folder, f'T_gripper2cam_Method_{i}.txt'), self.T_gripper2cam,
                        fmt='%.4f', delimiter=',')
-
 
     def find_chessboard_corners(self, images, pattern_size, ShowCorners=False):
         """
@@ -275,13 +274,14 @@ class CameraCalibration:
             fig.savefig(os.path.join(self.ws_root, 'ReprojectionError.png'))
         return mean_error
 
-def mock_test():
+def test():
     """
     This function is used to test the CameraCalibration class
     :return: None
     """
-    image_folder = "/home/yunlongwang/workspace/cam_cali_ws/data/images"
-    PoseFolder = "/home/yunlongwang/workspace/cam_cali_ws/data/tcp_poses"
+    root_folder = os.path.dirname(os.path.abspath(__file__))
+    image_folder = os.path.join(root_folder, "data/images")
+    PoseFolder = os.path.join(root_folder, "data/tcp_poses")
     calib = CameraCalibration(
         image_folder=image_folder,
         Transforms_folder=PoseFolder,
@@ -293,4 +293,4 @@ def mock_test():
     calib.run()
 
 if __name__== "__main__":
-    mock_test()
+    test()
