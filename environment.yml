@@ -1,6 +1,5 @@
 name: cam_cali_env
 channels:
-  - robostack-staging
   - conda-forge
 dependencies:
   - _libgcc_mutex=0.1=conda_forge
